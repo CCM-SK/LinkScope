@@ -10,16 +10,6 @@ A small, static URL inspection and preview tool designed for GitHub Pages. It ha
 - Block non-HTTP(S) schemes, embedded URL credentials, and obvious local/private IP destinations.
 - No analytics, persistence, server-side URL fetching, or external scanning service.
 
-## Deploy to GitHub Pages
-
-1. Create a new GitHub repository and upload the contents of this project (keep `index.html` in the repository root).
-2. Open **Settings → Pages** in the repository.
-3. Under **Build and deployment**, choose **GitHub Actions** as the source.
-4. Push to the `main` branch. The workflow in `.github/workflows/pages.yml` will publish the site.
-5. The published address will appear in **Settings → Pages** after the workflow completes.
-
-You can also use another branch name by editing the `branches` setting in `.github/workflows/pages.yml`.
-
 ## Important security and browser limitations
 
 This is a convenience preview, **not** a malware-analysis VM or a guarantee that a URL is safe.
