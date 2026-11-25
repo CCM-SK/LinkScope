@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10151f">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src http: https:; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="description" content="Inspect a URL and preview it inside a restrictive browser sandbox.">
+  <title>Linkscope — URL Sandbox</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Linkscope home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>LINKSCOPE</span>
+      </a>
+      <span class="topbar-tag"><span class="pulse-dot"></span> BROWSER-SIDE ANALYSIS</span>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="eyebrow"><span class="eyebrow-line"></span> URL INSPECTION WORKSPACE</div>
+        <h1>Know before<br><em>you go.</em></h1>
+        <p class="intro-copy">Inspect a link, then open it in a contained preview. No account, backend, or third-party scanning service required.</p>
+      </section>
+
+      <section class="input-panel panel" aria-labelledby="url-label">
+        <div class="panel-heading">
+          <div>
+            <div class="section-kicker">01 / TARGET</div>
+            <h2 id="url-label">Enter a URL to inspect</h2>
+          </div>
+          <span class="privacy-chip"><span class="lock-icon" aria-hidden="true">⌑</span> Stays in your browser</span>
+        </div>
+        <form id="url-form" novalidate>
+          <label class="sr-only" for="url-input">Website URL</label>
+          <div class="url-entry">
+            <span class="input-prefix" aria-hidden="true">↗</span>
+            <input id="url-input" name="url" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://example.com/interesting-link" aria-describedby="input-hint input-error">
+            <button class="launch-button" type="submit"><span>Inspect &amp; open</span><span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="input-meta">
+            <p id="input-hint">HTTP and HTTPS links only. Obvious local/private network addresses are blocked.</p>
+            <button id="example-button" class="text-button" type="button">Try an example URL <span aria-hidden="true">→</span></button>
+          </div>
+          <p id="input-error" class="error-message" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section class="workspace" aria-label="URL inspection and sandbox preview">
+        <div class="details-column">
+          <section class="panel detail-panel" aria-labelledby="details-title">
+            <div class="panel-heading compact-heading">
+              <div>
+                <div class="section-kicker">02 / BREAKDOWN</div>
+                <h2 id="details-title">URL details</h2>
+              </div>
+              <span id="analysis-state" class="state-label">AWAITING URL</span>
+            </div>
+            <div id="empty-details" class="empty-state">
+              <span class="empty-icon" aria-hidden="true">⌕</span>
+              <p>Your URL breakdown will appear here.</p>
+            </div>
+            <div id="url-details" class="details-list" hidden>
+              <div class="detail-row"><span>HOSTNAME</span><strong id="detail-host">—</strong></div>
+              <div class="detail-row"><span>PROTOCOL</span><strong id="detail-protocol">—</strong></div>
+              <div class="detail-row"><span>PORT</span><strong id="detail-port">—</strong></div>
+              <div class="detail-row"><span>PATH</span><strong id="detail-path">—</strong></div>
+              <div class="detail-row"><span>QUERY PARAMETERS</span><strong id="detail-query">—</strong></div>
+              <div class="detail-row"><span>FRAGMENT</span><strong id="detail-fragment">—</strong></div>
+              <div class="detail-row full-row"><span>FULL URL</span><code id="detail-full">—</code></div>
+              <div id="notices" class="notices" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section class="panel safety-panel" aria-labelledby="safety-title">
+            <div class="safety-icon" aria-hidden="true">!</div>
+            <div>
+              <h3 id="safety-title">A contained preview, not a virtual machine</h3>
+              <p>The page is loaded by your browser. The sandbox blocks top-level navigation, popups, forms, and downloads. Scripts are off by default. It does not make a malicious site harmless or prevent it from making network requests.</p>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel preview-panel" aria-labelledby="preview-title">
+          <div class="preview-header">
+            <div class="panel-heading compact-heading">
+              <div>
+                <div class="section-kicker">03 / SANDBOX</div>
+                <h2 id="preview-title">Live preview</h2>
+              </div>
+              <span class="sandbox-badge"><span class="sandbox-dot"></span> RESTRICTED FRAME</span>
+            </div>
+            <div class="preview-toolbar">
+              <div class="preview-address" title="Initial URL">
+                <span class="address-lock" aria-hidden="true">⌑</span>
+                <span id="preview-address">Waiting for a URL…</span>
+              </div>
+              <div class="toolbar-actions">
+                <button id="reload-button" class="icon-button" type="button" aria-label="Reload preview" title="Reload preview" disabled>⟳</button>
+                <button id="stop-button" class="icon-button" type="button" aria-label="Stop preview" title="Stop preview" disabled>×</button>
+              </div>
+            </div>
+          </div>
+          <div class="preview-options">
+            <label class="toggle-label" for="scripts-toggle">
+              <input id="scripts-toggle" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Allow page scripts</span>
+            </label>
+            <span class="option-note">Less restrictive · scripts can run</span>
+          </div>
+          <div class="frame-wrap">
+            <div id="preview-placeholder" class="preview-placeholder">
+              <div class="placeholder-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+              <h3>Your preview starts here</h3>
+              <p>Enter a link above to load it inside the sandbox.</p>
+            </div>
+            <iframe id="sandbox-frame" title="Sandboxed website preview" sandbox="" referrerpolicy="no-referrer" allow="" hidden></iframe>
+          </div>
+          <div class="preview-footer">
+            <span id="preview-status" role="status">No page loaded</span>
+            <span class="footer-hint">Some websites block embedded previews.</span>
+          </div>
+        </section>
+      </section>
+
+      <section class="redirect-note" aria-label="Redirect visibility note">
+        <span class="redirect-note-icon" aria-hidden="true">↪</span>
+        <p><strong>About redirects:</strong> The embedded browser follows redirects as it normally would, but browser security rules prevent this app from reading a cross-origin frame’s final address or redirect chain. The address above is the URL you entered, not a verified final destination.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>LINKSCOPE <span class="footer-separator">/</span> OPEN-SOURCE URL WORKSPACE</span>
+      <span>NO SERVER · NO TRACKING · NO EXTERNAL API</span>
+    </footer>
+  </div>
+</body>
+</html>
